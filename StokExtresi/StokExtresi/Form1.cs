@@ -71,22 +71,30 @@ namespace StokExtresi
                     sti.IslemTur = "Giriş";
                     sti.GirisMiktar =Convert.ToDecimal(item.ItemArray[5]);
                     sti.CikisMiktar = 0;
-                    temp = temp + Convert.ToInt32(sti.GirisMiktar + sti.CikisMiktar);
                 }
                 else
                 {
                     sti.IslemTur = "Çıkış";
                     sti.GirisMiktar = 0;
                     sti.CikisMiktar = Convert.ToDecimal(item.ItemArray[5]);
-                    temp = temp - Convert.ToInt32(sti.GirisMiktar + sti.CikisMiktar);
                 }
                 sti.EvrakNo = item.ItemArray[2].ToString();
                 DateTime tarih = DateTime.FromOADate(Convert.ToDouble(item.ItemArray[3]));
                 sti.Tarih = tarih.ToString("yyyy-MM-dd");
-                sti.Stok = temp;
-                
                 stiList.Add(sti);
                 i++;
+            }
+              foreach (var item in stiList.OrderBy(x => DateTime.Parse(x.Tarih)).ToList())
+            {
+                if (item.IslemTur=="Giriş")
+                {
+                    temp = temp + Convert.ToInt32(item.GirisMiktar + item.CikisMiktar);
+                }
+                else
+                {
+                    temp = temp - Convert.ToInt32(item.GirisMiktar + item.CikisMiktar);
+                }
+                item.Stok = temp;
             }
             return stiList.OrderBy(x => DateTime.Parse(x.Tarih)).ToList();
         }
